@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet, Image } from 'react-native'
+import { View, FlatList, StyleSheet, Image } from 'react-native'
 import { AddTodo } from '../components/AddTodo'
 import { Todo } from '../components/Todo'
 
