@@ -1,10 +1,20 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
+import * as Font from 'expo-font'
+import AppLoading from 'expo-app-loading'
 import { Navbar } from './src/components/Navbar'
 import { MainScreen } from './src/screens/MainScreen'
 import { TodoScreen } from './src/screens/TodoScreen'
 
+async function loadApplication() {
+  await Font.loadAsync({
+    'Mont-Regular': require('./assets/fonts/Mont-Regular.ttf'),
+    'Mont-Bold': require('./assets/fonts/Mont-Bold.ttf')
+  })
+}
+
 export default function App() {
+  const [isReady, setIsReady] = useState(false)
   const [todoId, setTodoId] = useState(null)
   const [todos, setTodos] = useState(
     [...Array(2)].map((n, i) => ({
@@ -12,6 +22,16 @@ export default function App() {
       title: String((i + 1) * 1000)
     }))
   )
+
+  if (!isReady) {
+    return (
+      <AppLoading
+        startAsync={loadApplication}
+        onError={err => console.log(err)}
+        onFinish={() => setIsReady(true)}
+      />
+    )
+  }
 
   const addTodo = title => {
     const newTodo = {
