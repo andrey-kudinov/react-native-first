@@ -10,6 +10,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo/vector-icons": "^12.0.5",
     "expo": "~44.0.0",
     "expo-app-loading": "^1.3.0",
     "expo-font": "^10.0.4",
