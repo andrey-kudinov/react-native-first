@@ -1,4 +1,5 @@
 export const THEME = {
+  PADDING_HORIZONTAL: 30,
   DANGER_COLOR: '#e53935',
   GREY_COLOR: '#757575',
   MAIN_COLOR: '#3949ab'
