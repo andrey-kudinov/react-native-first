@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { View, Button, StyleSheet, TextInput, Modal } from 'react-native'
+import { View, StyleSheet, TextInput, Modal } from 'react-native'
 import { THEME } from '../theme'
+import { AppButton } from '../components/base/AppButton'
 
 export const EditModal = ({ visible, onCancel, value, onSave }) => {
   const [title, setTitle] = useState(value)
@@ -26,12 +27,14 @@ export const EditModal = ({ visible, onCancel, value, onSave }) => {
           maxLength={64}
         />
         <View style={styles.buttons}>
-          <Button
-            title='Cancel'
-            onPress={onCancel}
-            color={THEME.DANGER_COLOR}
-          />
-          <Button title='Save' onPress={handleSave} />
+          <View style={styles.button}>
+            <AppButton onPress={onCancel} color={THEME.DANGER_COLOR}>
+              Cancel
+            </AppButton>
+          </View>
+          <View style={styles.button}>
+            <AppButton onPress={handleSave}>Save</AppButton>
+          </View>
         </View>
       </View>
     </Modal>
@@ -42,18 +45,23 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 30
   },
   input: {
     padding: 10,
     borderBottomColor: THEME.MAIN_COLOR,
     borderBottomWidth: 2,
-    width: '80%'
+    width: '100%',
+    fontSize: 20
   },
   buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '100%',
     marginTop: 10
+  },
+  button: {
+    width: '40%'
   }
 })

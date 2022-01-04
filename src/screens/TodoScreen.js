@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { View, Button, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
+import { FontAwesome, AntDesign } from '@expo/vector-icons'
 import { AppCard } from '../components/base/AppCard'
 import { EditModal } from '../components/EditModal'
 import { THEME } from '../theme'
 import { AppTextBold } from '../components/base/AppTextBold'
+import { AppButton } from '../components/base/AppButton'
 
 export const TodoScreen = ({ goBack, todo, onRemove, onSave }) => {
   const [modal, setModal] = useState(false)
@@ -24,18 +26,23 @@ export const TodoScreen = ({ goBack, todo, onRemove, onSave }) => {
 
       <AppCard style={styles.card}>
         <AppTextBold style={styles.title}>{todo.title}</AppTextBold>
-        <Button title='Edit' onPress={() => setModal(true)} />
+        <AppButton onPress={() => setModal(true)}>
+          <FontAwesome name='edit' size={20} />
+        </AppButton>
       </AppCard>
       <View style={styles.buttons}>
         <View style={styles.button}>
-          <Button onPress={goBack} title='Back' color={THEME.GREY_COLOR} />
+          <AppButton onPress={goBack} color={THEME.GREY_COLOR}>
+            <AntDesign name='back' color='#fff' size={20} />
+          </AppButton>
         </View>
         <View style={styles.button}>
-          <Button
+          <AppButton
             onPress={() => onRemove(todo.id)}
-            title='Remove'
             color={THEME.DANGER_COLOR}
-          />
+          >
+            <FontAwesome name='remove' color='#fff' size={20} />
+          </AppButton>
         </View>
       </View>
     </View>
@@ -48,7 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   button: {
-    width: '50%'
+    width: '40%'
   },
   title: {
     fontSize: 20
@@ -56,5 +63,10 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 20,
     padding: 15
+  },
+  icon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 10
   }
 })
