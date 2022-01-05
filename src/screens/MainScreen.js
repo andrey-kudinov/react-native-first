@@ -7,11 +7,11 @@ import { TodoContext } from '../context/todo/todoContext'
 import { ScreenContext } from '../context/screen/screenContext'
 
 export const MainScreen = () => {
-  const { addTodo, todos, removeTodo } = useContext(TodoContext)
-  const { changeScreen } = useContext(ScreenContext)
-  const [deviceWidth, setDeviceWidth] = useState(
-    Dimensions.get('window').width - THEME.PADDING_HORIZONTAL * 2
-  )
+  const { addTodo, todos, removeTodo } = useContext(TodoContext),
+    { changeScreen } = useContext(ScreenContext),
+    [deviceWidth, setDeviceWidth] = useState(
+      Dimensions.get('window').width - THEME.PADDING_HORIZONTAL * 2
+    )
 
   useEffect(() => {
     const update = () => {
@@ -42,10 +42,6 @@ export const MainScreen = () => {
   if (!todos.length) {
     content = (
       <View style={styles.imageWrapper}>
-        {/* <Image
-          style={styles.image}
-          source={require('../../assets/no-todo.jpeg')}
-        /> */}
         <Image
           style={styles.image}
           source={{

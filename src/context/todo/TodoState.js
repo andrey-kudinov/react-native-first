@@ -15,30 +15,32 @@ export const TodoState = ({ children }) => {
     { changeScreen } = useContext(ScreenContext),
     [state, dispatch] = useReducer(todoReducer, initialState)
 
-  const addTodo = title => dispatch({ type: ADD_TODO, title }),
-    removeTodo = id => {
-      const todo = state.todos.find(todo => todo.id === id)
-      Alert.alert(
-        'Remove todo',
-        `Remove ${todo.title}?`,
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel'
-          },
-          {
-            text: 'Remove',
-            style: 'destructive',
-            onPress: () => {
-              changeScreen(null)
-              dispatch({ type: REMOVE_TODO, id })
-            }
+  const addTodo = title => dispatch({ type: ADD_TODO, title })
+
+  const removeTodo = id => {
+    const todo = state.todos.find(todo => todo.id === id)
+
+    Alert.alert(
+      'Remove todo',
+      `Remove ${todo.title}?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: () => {
+            changeScreen(null)
+            dispatch({ type: REMOVE_TODO, id })
           }
-        ],
-        { cancelable: false }
-      )
-    },
-    updateTodo = (id, title) => dispatch({ type: UPDATE_TODO, id, title })
+        }
+      ],
+      { cancelable: false }
+    )
+  }
+  const updateTodo = (id, title) => dispatch({ type: UPDATE_TODO, id, title })
 
   return (
     <TodoContext.Provider

@@ -31,12 +31,14 @@ export const EditModal = ({ visible, onCancel, value, onSave }) => {
           autoCorrect={false}
           maxLength={64}
         />
+
         <View style={styles.buttons}>
           <View style={styles.button}>
             <AppButton onPress={handleCancel} color={THEME.DANGER_COLOR}>
               Cancel
             </AppButton>
           </View>
+          
           <View style={styles.button}>
             <AppButton onPress={handleSave}>Save</AppButton>
           </View>

@@ -10,9 +10,9 @@ import { TodoContext } from '../context/todo/todoContext'
 import { ScreenContext } from '../context/screen/screenContext'
 
 export const TodoScreen = ({ goBack }) => {
-  const {todos, updateTodo, removeTodo} = useContext(TodoContext)
-  const {todoId, changeScreen} = useContext(ScreenContext)
-  const [modal, setModal] = useState(false)
+  const { todos, updateTodo, removeTodo } = useContext(TodoContext),
+    { todoId, changeScreen } = useContext(ScreenContext),
+    [modal, setModal] = useState(false)
 
   const todo = todos.find(todo => todo.id === todoId)
 
@@ -32,16 +32,22 @@ export const TodoScreen = ({ goBack }) => {
 
       <AppCard style={styles.card}>
         <AppTextBold style={styles.title}>{todo.title}</AppTextBold>
+
         <AppButton onPress={() => setModal(true)}>
           <FontAwesome name='edit' size={20} />
         </AppButton>
       </AppCard>
+
       <View style={styles.buttons}>
         <View style={styles.button}>
-          <AppButton onPress={() => changeScreen(null)} color={THEME.GREY_COLOR}>
+          <AppButton
+            onPress={() => changeScreen(null)}
+            color={THEME.GREY_COLOR}
+          >
             <AntDesign name='back' color='#fff' size={20} />
           </AppButton>
         </View>
+        
         <View style={styles.button}>
           <AppButton
             onPress={() => removeTodo(todo.id)}
