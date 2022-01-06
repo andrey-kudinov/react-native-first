@@ -1,25 +1,18 @@
 import {
   ADD_TODO,
   REMOVE_TODO,
-  SHOW_LOADER,
   UPDATE_TODO,
   SHOW_LOADER,
   HIDE_LOADER,
   SHOW_ERROR,
   CLEAR_ERROR,
-  FETCH_TODO
+  FETCH_TODOS
 } from '../types'
 
 const handlers = {
-  [ADD_TODO]: (state, { title }) => ({
+  [ADD_TODO]: (state, { id, title }) => ({
     ...state,
-    todos: [
-      ...state.todos,
-      {
-        id: Date.now(),
-        title
-      }
-    ]
+    todos: [...state.todos, { id, title }]
   }),
   [REMOVE_TODO]: (state, { id }) => ({
     ...state,
@@ -38,7 +31,7 @@ const handlers = {
   [HIDE_LOADER]: state => ({ ...state, loading: false }),
   [SHOW_ERROR]: (state, { error }) => ({ ...state, error }),
   [CLEAR_ERROR]: state => ({ ...state, error: null }),
-  [FETCH_TODO]: (state, { todos }) => ({ ...state, todos }),
+  [FETCH_TODOS]: (state, { todos }) => ({ ...state, todos }),
   DEFAULT: state => state
 }
 
