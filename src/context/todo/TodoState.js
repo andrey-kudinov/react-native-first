@@ -8,7 +8,7 @@ import {
   FETCH_TODOS,
   REMOVE_TODO,
   SHOW_ERROR,
-  HIDE_ERROR,
+  CLEAR_ERROR,
   SHOW_LOADER,
   HIDE_LOADER,
   UPDATE_TODO
@@ -22,8 +22,9 @@ export const TodoState = ({ children }) => {
     },
     { changeScreen } = useContext(ScreenContext),
     [state, dispatch] = useReducer(todoReducer, initialState),
-    url =
-      'https://todo-63-default-rtdb.europe-west1.firebasedatabase.app/todos.json'
+    baseUrl =
+      'https://todo-63-default-rtdb.europe-west1.firebasedatabase.app/todos',
+    url = `${baseUrl}.json`
 
   const addTodo = async title => {
     const options = {
@@ -54,8 +55,17 @@ export const TodoState = ({ children }) => {
         {
           text: 'Remove',
           style: 'destructive',
-          onPress: () => {
+          onPress: async () => {
+            const options = {
+              method: 'DELETE',
+              header: {
+                'Content-Type': 'application/json'
+              }
+            }
+
             changeScreen(null)
+            await fetch(`${baseUrl}/${id}.json`, options)
+
             dispatch({ type: REMOVE_TODO, id })
           }
         }
@@ -66,30 +76,54 @@ export const TodoState = ({ children }) => {
 
   const fetchTodos = async () => {
     showLoader()
+    clearError()
 
-    const options = {
-      header: {
-        'Content-Type': 'application/json'
+    try {
+      const options = {
+        header: {
+          'Content-Type': 'application/json'
+        }
       }
+
+      const response = await fetch(url, options),
+        data = await response.json()
+
+      const todos = Object.keys(data).map(key => ({ ...data[key], id: key }))
+
+      dispatch({ type: FETCH_TODOS, todos })
+    } catch (error) {
+      showError('Fatal error!')
+      console.log(error)
+    } finally {
+      hideLoader()
     }
-
-    const response = await fetch(url, options),
-      data = await response.json()
-
-    const todos = Object.keys(data).map(key => ({ ...data[key], id: key }))
-
-    dispatch({ type: FETCH_TODOS, todos })
-
-    hideLoader()
   }
 
-  const updateTodo = (id, title) => dispatch({ type: UPDATE_TODO, id, title })
+  const updateTodo = async (id, title) => {
+    clearError()
+
+    try {
+      const options = {
+        method: 'PATCH',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title })
+      }
+
+      await fetch(`${baseUrl}/${id}.json`, options)
+      dispatch({ type: UPDATE_TODO, id, title })
+    } catch (error) {
+      showError('Fatal error!')
+      console.log(error)
+    }
+  }
 
   const showLoader = () => dispatch({ type: SHOW_LOADER })
 
   const hideLoader = () => dispatch({ type: HIDE_LOADER })
 
-  const showError = error => dispatch({ type: SHOW_ERROR })
+  const showError = error => dispatch({ type: SHOW_ERROR, error })
 
   const clearError = () => dispatch({ type: CLEAR_ERROR })
 
