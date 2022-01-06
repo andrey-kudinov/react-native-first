@@ -3,19 +3,40 @@ import { Alert } from 'react-native'
 import { TodoContext } from './todoContext'
 import { ScreenContext } from '../screen/screenContext'
 import { todoReducer } from './todoReducer'
-import { ADD_TODO, REMOVE_TODO, UPDATE_TODO } from '../types'
+import {
+  ADD_TODO,
+  FETCH_TODOS,
+  REMOVE_TODO,
+  SHOW_ERROR,
+  SHOW_LOADER,
+  UPDATE_TODO
+} from '../types'
 
 export const TodoState = ({ children }) => {
   const initialState = {
-      todos: [...Array(2)].map((n, i) => ({
-        id: i + 1,
-        title: String((i + 1) * 1000)
-      }))
+      todos: [],
+      loading: false,
+      error: null
     },
     { changeScreen } = useContext(ScreenContext),
-    [state, dispatch] = useReducer(todoReducer, initialState)
+    [state, dispatch] = useReducer(todoReducer, initialState),
+    url =
+      'https://todo-63-default-rtdb.europe-west1.firebasedatabase.app/todos.json'
 
-  const addTodo = title => dispatch({ type: ADD_TODO, title })
+  const addTodo = async title => {
+    const options = {
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ title })
+    }
+
+    const response = await fetch(url, options),
+      data = await response.json()
+
+    dispatch({ type: ADD_TODO, id: data.name, title })
+  }
 
   const removeTodo = id => {
     const todo = state.todos.find(todo => todo.id === id)
@@ -40,11 +61,45 @@ export const TodoState = ({ children }) => {
       { cancelable: false }
     )
   }
+
+  const fetchTodos = async () => {
+    const options = {
+      header: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    const response = await fetch(url, options),
+      data = await response.json()
+
+    const todos = Object.keys(data).map(key => ({ ...data[key], id: key }))
+    console.log('data -', data)
+    console.log('todos -', todos)
+
+    dispatch({ type: FETCH_TODOS, todos })
+  }
+
   const updateTodo = (id, title) => dispatch({ type: UPDATE_TODO, id, title })
+
+  const showLoader = () => dispatch({ type: SHOW_LOADER })
+
+  const hideLoader = () => dispatch({ type: HIDE_LOADER })
+
+  const showError = error => dispatch({ type: SHOW_ERROR })
+
+  const clearError = () => dispatch({ type: CLEAR_ERROR })
 
   return (
     <TodoContext.Provider
-      value={{ todos: state.todos, addTodo, removeTodo, updateTodo }}
+      value={{
+        todos: state.todos,
+        loading: state.loading,
+        error: state.error,
+        addTodo,
+        removeTodo,
+        updateTodo,
+        fetchTodos
+      }}
     >
       {children}
     </TodoContext.Provider>
