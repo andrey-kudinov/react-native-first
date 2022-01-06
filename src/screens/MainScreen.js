@@ -6,9 +6,12 @@ import { THEME } from '../theme'
 import { TodoContext } from '../context/todo/todoContext'
 import { ScreenContext } from '../context/screen/screenContext'
 import { AppLoader } from '../components/base/AppLoader'
+import { AppText } from '../components/base/AppText'
+import { AppButton } from '../components/base/AppButton'
 
 export const MainScreen = () => {
-  const { addTodo, todos, removeTodo, fetchTodos, loading, error } = useContext(TodoContext),
+  const { addTodo, todos, removeTodo, fetchTodos, loading, error } =
+      useContext(TodoContext),
     { changeScreen } = useContext(ScreenContext),
     [deviceWidth, setDeviceWidth] = useState(
       Dimensions.get('window').width - THEME.PADDING_HORIZONTAL * 2
@@ -36,6 +39,15 @@ export const MainScreen = () => {
 
   if (loading) {
     return <AppLoader />
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorWrapper}>
+        <AppText style={styles.error}>{error}</AppText>
+        <AppButton onPress={loadTodos}>Try again</AppButton>
+      </View>
+    )
   }
 
   let content = (
@@ -66,7 +78,6 @@ export const MainScreen = () => {
   return (
     <View>
       <AddTodo onSubmit={addTodo} />
-
       {content}
     </View>
   )
@@ -84,5 +95,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'contain'
+  },
+  errorWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 100
+  },
+  error: {
+    fontSize: 20,
+    color: THEME.DANGER_COLOR,
+    marginBottom: 20
   }
 })
