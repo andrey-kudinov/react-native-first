@@ -8,7 +8,9 @@ import {
   FETCH_TODOS,
   REMOVE_TODO,
   SHOW_ERROR,
+  HIDE_ERROR,
   SHOW_LOADER,
+  HIDE_LOADER,
   UPDATE_TODO
 } from '../types'
 
@@ -63,6 +65,8 @@ export const TodoState = ({ children }) => {
   }
 
   const fetchTodos = async () => {
+    showLoader()
+
     const options = {
       header: {
         'Content-Type': 'application/json'
@@ -73,10 +77,10 @@ export const TodoState = ({ children }) => {
       data = await response.json()
 
     const todos = Object.keys(data).map(key => ({ ...data[key], id: key }))
-    console.log('data -', data)
-    console.log('todos -', todos)
 
     dispatch({ type: FETCH_TODOS, todos })
+
+    hideLoader()
   }
 
   const updateTodo = (id, title) => dispatch({ type: UPDATE_TODO, id, title })
