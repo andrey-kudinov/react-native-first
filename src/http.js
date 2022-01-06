@@ -12,7 +12,7 @@ export class Http {
 
   static async post(url, data = {}) {
     try {
-      return await request(url, 'POST')
+      return await request(url, 'POST', data)
     } catch (error) {
       console.log(error)
       throw error
@@ -30,7 +30,7 @@ export class Http {
 
   static async patch(url, data = {}) {
     try {
-      return await request(url, 'PATCH')
+      return await request(url, 'PATCH', data)
     } catch (error) {
       console.log(error)
       throw error
@@ -38,7 +38,7 @@ export class Http {
   }
 }
 
-async function request(url, method = 'GET') {
+async function request(url, method = 'GET', data) {
   const config = {
     method,
     headers: Http.HEADERS
@@ -48,8 +48,7 @@ async function request(url, method = 'GET') {
     config.body = JSON.stringify(data)
   }
 
-  const response = await fetch(url, config),
-    data = await response.json()
+  const response = await fetch(url, config)
 
-  return data
+  return await response.json()
 }
