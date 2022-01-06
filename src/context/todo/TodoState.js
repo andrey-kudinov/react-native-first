@@ -13,6 +13,7 @@ import {
   HIDE_LOADER,
   UPDATE_TODO
 } from '../types'
+import { Http } from '../../http'
 
 export const TodoState = ({ children }) => {
   const initialState = {
@@ -27,18 +28,14 @@ export const TodoState = ({ children }) => {
     url = `${baseUrl}.json`
 
   const addTodo = async title => {
-    const options = {
-      method: 'POST',
-      header: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ title })
+    clearError()
+
+    try {
+      const data = await Http.post(url, { title })
+      dispatch({ type: ADD_TODO, id: data.name, title })
+    } catch (error) {
+      showError('Fatal error!')
     }
-
-    const response = await fetch(url, options),
-      data = await response.json()
-
-    dispatch({ type: ADD_TODO, id: data.name, title })
   }
 
   const removeTodo = id => {
@@ -64,9 +61,13 @@ export const TodoState = ({ children }) => {
             }
 
             changeScreen(null)
-            await fetch(`${baseUrl}/${id}.json`, options)
-
-            dispatch({ type: REMOVE_TODO, id })
+            clearError()
+            try {
+              await Http.delete(`${baseUrl}/${id}.json`)
+              dispatch({ type: REMOVE_TODO, id })
+            } catch (error) {
+              showError('Fatal error!')
+            }
           }
         }
       ],
@@ -79,17 +80,8 @@ export const TodoState = ({ children }) => {
     clearError()
 
     try {
-      const options = {
-        header: {
-          'Content-Type': 'application/json'
-        }
-      }
-
-      const response = await fetch(url, options),
-        data = await response.json()
-
-      const todos = Object.keys(data).map(key => ({ ...data[key], id: key }))
-
+      const data = await Http.get(url),
+        todos = Object.keys(data).map(key => ({ ...data[key], id: key }))
       dispatch({ type: FETCH_TODOS, todos })
     } catch (error) {
       showError('Fatal error!')
@@ -103,15 +95,7 @@ export const TodoState = ({ children }) => {
     clearError()
 
     try {
-      const options = {
-        method: 'PATCH',
-        header: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ title })
-      }
-
-      await fetch(`${baseUrl}/${id}.json`, options)
+      await Http.patch(`${baseUrl}/${id}.json`, { title })
       dispatch({ type: UPDATE_TODO, id, title })
     } catch (error) {
       showError('Fatal error!')
